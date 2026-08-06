@@ -1,0 +1,61 @@
+---
+title: "Campus Health Centre Demand Analytics"
+author: "Sneha Bhowmick"
+date: "2026-08-06"
+output: html_document
+---
+---
+
+# Introduction
+
+Campus health centres experience fluctuations in patient demand due to seasonal illnesses, examination periods, weather conditions, and other factors. This project aims to develop an analytics-based solution to forecast demand and support better resource allocation.
+
+# Problem Statement
+
+The campus health centre faces challenges in predicting patient demand, resulting in long waiting times, inefficient staff allocation, and medicine shortages.
+
+# Objectives
+
+- Forecast daily patient demand.
+- Predict appointment no-shows.
+- Analyze disease trends.
+- Improve doctor scheduling.
+- Support data-driven decision making.
+
+# Proposed Methodology
+
+1. Collect or create dataset.
+2. Perform data cleaning.
+3. Conduct Exploratory Data Analysis.
+4. Build prediction models.
+5. Develop an analytics dashboard.
+6. Generate business recommendations.
+
+# Current Status
+
+Project initialized.
+
+Dataset collection is under progress.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
