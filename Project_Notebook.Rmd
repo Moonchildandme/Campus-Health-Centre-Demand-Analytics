@@ -1,61 +1,65 @@
 ---
 title: "Campus Health Centre Demand Analytics"
-author: "Sneha Bhowmick"
-date: "2026-08-06"
+author: Sneha Bhowmick
+date: August 10, 2026
 output: html_document
 ---
----
 
-# Introduction
+# 1. Project Theme
 
-Campus health centres experience fluctuations in patient demand due to seasonal illnesses, examination periods, weather conditions, and other factors. This project aims to develop an analytics-based solution to forecast demand and support better resource allocation.
+## Campus Health Centre Demand Analytics
 
-# Problem Statement
+The project aims to use healthcare appointment data to understand and predict patient attendance patterns and thereby support estimation of patient load at a campus health centre.
 
-The campus health centre faces challenges in predicting patient demand, resulting in long waiting times, inefficient staff allocation, and medicine shortages.
+# 2. Selected Type of Analytics
 
-# Objectives
+## Predictive Analytics
 
-- Forecast daily patient demand.
-- Predict appointment no-shows.
-- Analyze disease trends.
-- Improve doctor scheduling.
-- Support data-driven decision making.
+Predictive analytics has been selected as the initial type of analytics to investigate.
 
-# Proposed Methodology
+The objective is to use historical appointment and patient information to predict whether a scheduled patient is likely to attend the appointment. The resulting predictions can help estimate the expected patient load and support better planning of health-centre resources.
 
-1. Collect or create dataset.
-2. Perform data cleaning.
-3. Conduct Exploratory Data Analysis.
-4. Build prediction models.
-5. Develop an analytics dashboard.
-6. Generate business recommendations.
+# 3. Research Question
 
-# Current Status
+The specific question for the predictive analysis is:
 
-Project initialized.
+> **Can historical appointment and patient information be used to predict whether a scheduled patient will attend the appointment, thereby helping a campus health centre estimate its expected patient load?**
 
-Dataset collection is under progress.
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+# 4. Dataset Required
 
-## R Markdown
+A publicly available healthcare appointment dataset containing a large number of historical appointment records is required to investigate the research question.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The proposed dataset is the **Medical Appointment No Shows** dataset. It contains approximately 110,000 appointment records and includes information such as:
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+- Patient demographic information
+- Scheduled date
+- Appointment date
+- Health-related indicators
+- SMS reminder information
+- Appointment attendance outcome
 
-```{r cars}
-summary(cars)
-```
+The appointment attendance outcome will be used as the target variable for the initial predictive analysis.
 
-## Including Plots
+# 5. Data Access Plan
 
-You can also embed plots, for example:
+The dataset will be accessed from a publicly available online data repository and downloaded in CSV format.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+The dataset will then be imported into R using R Markdown. The initial data preparation will include:
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+1. Examining the number of observations and variables.
+2. Understanding the meaning and data type of each variable.
+3. Checking for missing values.
+4. Checking for duplicate records.
+5. Converting date variables into appropriate date formats.
+6. Creating useful derived variables from the existing data where appropriate.
+7. Selecting relevant variables for further analysis.
+
+The cleaned dataset will subsequently be used for exploratory analysis and predictive modelling.
+
+# 6. Current Status
+
+The project has been initialized.
+
+The analytics type, research question, required dataset and data access plan have been identified.
+
+The next stage will be to obtain and inspect the selected dataset.
