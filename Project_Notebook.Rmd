@@ -1,5 +1,5 @@
 ---
-title: "Campus Health Centre Demand Analytics"
+title: Campus Health Centre Demand Analytics
 author: Sneha Bhowmick
 date: August 10, 2026
 output: html_document
@@ -23,7 +23,7 @@ The objective is to use historical appointment and patient information to predic
 
 The specific question for the predictive analysis is:
 
-> **Can historical appointment and patient information be used to predict whether a scheduled patient will attend the appointment, thereby helping a campus health centre estimate its expected patient load?**
+> Can historical appointment and patient information be used to predict whether a scheduled patient will attend the appointment, thereby helping a campus health centre estimate its expected patient load?
 
 # 4. Dataset Required
 
