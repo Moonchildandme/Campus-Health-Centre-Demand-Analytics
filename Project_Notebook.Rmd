@@ -63,3 +63,189 @@ The project has been initialized.
 The analytics type, research question, required dataset and data access plan have been identified.
 
 The next stage will be to obtain and inspect the selected dataset.
+# 7. Loading the Dataset
+
+```{r load-data}
+data <- read.csv("KaggleV2-May-2016.csv",
+                 stringsAsFactors = FALSE)
+
+head(data)
+
+# 8. Initial Data Inspection
+
+The dataset is first inspected to understand its structure, variables, dimensions, and basic statistical characteristics.
+
+```{r data-inspection}
+str(data)
+summary(data)
+dim(data)
+names(data)
+
+# 9. Data Quality Check
+
+The dataset is checked for missing values and duplicate records before further analysis.
+
+```{r data-quality}
+colSums(is.na(data))
+sum(duplicated(data))
+
+# 10. Checking for Invalid Values
+
+The dataset is examined for values that may be outside the expected range of the variables.
+
+```{r invalid-values}
+sum(data$Age < 0)
+sum(data$Age > 100)
+
+table(data$Handcap)
+table(data$Scholarship)
+table(data$Hipertension)
+table(data$Diabetes)
+table(data$Alcoholism)
+table(data$SMS_received)
+table(data$No.show)
+
+# 11. Data Cleaning and Variable Preparation
+
+The data is prepared for further analysis by handling invalid age values and converting the appointment date variables into appropriate date formats.
+
+```{r data-cleaning}
+
+# Create a cleaned copy of the dataset
+data_clean <- data
+
+# Replace the invalid age value of -1 with NA
+data_clean$Age[data_clean$Age < 0] <- NA
+
+# Convert date variables to Date format
+data_clean$ScheduledDay <- as.Date(data_clean$ScheduledDay)
+data_clean$AppointmentDay <- as.Date(data_clean$AppointmentDay)
+
+# Create the waiting time variable
+data_clean$WaitingDays <- as.numeric(
+  data_clean$AppointmentDay - data_clean$ScheduledDay
+)
+
+# Check the cleaned data
+summary(data_clean$Age)
+summary(data_clean$WaitingDays)
+
+# 12. Checking Waiting-Time Anomalies
+
+Some records may contain an appointment date that occurs before the scheduled date. These records are identified and inspected before deciding how to handle them.
+
+```{r waiting-time-check}
+
+# Count records with negative waiting time
+sum(data_clean$WaitingDays < 0)
+
+# Display the records with negative waiting time
+data_clean[data_clean$WaitingDays < 0,
+           c("ScheduledDay", "AppointmentDay", "WaitingDays")]
+
+# 13. Data Cleaning
+
+The dataset is cleaned by handling invalid age values and inconsistent waiting periods. A separate cleaned dataset is created so that the original dataset remains unchanged.
+
+```{r data-cleaning-final}
+
+# Create a copy of the original dataset
+data_clean <- data
+
+# Replace invalid age values with NA
+data_clean$Age[data_clean$Age < 0 | data_clean$Age > 100] <- NA
+
+# Convert date variables to Date format
+data_clean$ScheduledDay <- as.Date(data_clean$ScheduledDay)
+data_clean$AppointmentDay <- as.Date(data_clean$AppointmentDay)
+
+# Calculate waiting time in days
+data_clean$WaitingDays <- as.numeric(
+  data_clean$AppointmentDay - data_clean$ScheduledDay
+)
+
+# Remove records with negative waiting time
+data_clean <- data_clean[data_clean$WaitingDays >= 0, ]
+
+# Check the cleaned variables
+summary(data_clean$Age)
+summary(data_clean$WaitingDays)
+
+```
+
+# 14. Creating Variables for Demand Analysis
+
+Additional variables are created from the appointment date and waiting period to identify patterns in appointment demand.
+
+```{r create-demand-variables}
+
+# Day of the week of the appointment
+data_clean$AppointmentDayOfWeek <- weekdays(data_clean$AppointmentDay)
+
+# Month of the appointment
+data_clean$AppointmentMonth <- format(
+  data_clean$AppointmentDay, "%B"
+)
+
+# Week number of the appointment
+data_clean$AppointmentWeek <- format(
+  data_clean$AppointmentDay, "%U"
+)
+
+# Display the newly created variables
+head(data_clean[, c(
+  "AppointmentDay",
+  "AppointmentDayOfWeek",
+  "AppointmentMonth",
+  "AppointmentWeek",
+  "WaitingDays"
+)])
+
+```
+
+# 15. Appointment Demand by Day of the Week
+
+The number of appointments is examined across different days of the week to identify patterns in healthcare demand.
+
+```{r demand-by-day}
+
+# Count appointments by day of the week
+day_demand <- table(data_clean$AppointmentDayOfWeek)
+
+# Display the appointment counts
+day_demand
+
+
+```
+# 16. Visualization of Appointment Demand by Day
+
+The distribution of appointments across the days of the week is visualized to identify the days with higher healthcare demand and potential variations in patient demand throughout the week.
+
+```{r demand-day-plot}
+
+# Set the days in the correct weekly order
+day_demand_df <- data.frame(
+  Day = c("Monday", "Tuesday", "Wednesday",
+          "Thursday", "Friday", "Saturday"),
+  Appointments = c(
+    day_demand["Monday"],
+    day_demand["Tuesday"],
+    day_demand["Wednesday"],
+    day_demand["Thursday"],
+    day_demand["Friday"],
+    day_demand["Saturday"]
+  )
+)
+
+# Create the bar chart
+barplot(
+  day_demand_df$Appointments,
+  names.arg = day_demand_df$Day,
+  main = "Appointment Demand by Day of the Week",
+  xlab = "Day of the Week",
+  ylab = "Number of Appointments",
+  las = 2
+)
+```
+
+**Interpretation:** The visualization shows that appointment demand varies across the days of the week. Wednesday records the highest number of appointments, closely followed by Tuesday. Monday also shows relatively high demand, while Friday and Thursday have fewer appointments. Saturday has an exceptionally low number of appointments. This suggests that patient demand is concentrated mainly during weekdays, particularly in the middle of the week. These findings may help the campus health centre plan staff availability and allocate resources more effectively during high-demand days.
