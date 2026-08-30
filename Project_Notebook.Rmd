@@ -70,6 +70,7 @@ data <- read.csv("KaggleV2-May-2016.csv",
                  stringsAsFactors = FALSE)
 
 head(data)
+```
 
 # 8. Initial Data Inspection
 
@@ -80,6 +81,7 @@ str(data)
 summary(data)
 dim(data)
 names(data)
+```
 
 # 9. Data Quality Check
 
@@ -88,6 +90,7 @@ The dataset is checked for missing values and duplicate records before further a
 ```{r data-quality}
 colSums(is.na(data))
 sum(duplicated(data))
+```
 
 # 10. Checking for Invalid Values
 
@@ -104,7 +107,7 @@ table(data$Diabetes)
 table(data$Alcoholism)
 table(data$SMS_received)
 table(data$No.show)
-
+```
 # 11. Data Cleaning and Variable Preparation
 
 The data is prepared for further analysis by handling invalid age values and converting the appointment date variables into appropriate date formats.
@@ -129,6 +132,7 @@ data_clean$WaitingDays <- as.numeric(
 # Check the cleaned data
 summary(data_clean$Age)
 summary(data_clean$WaitingDays)
+```
 
 # 12. Checking Waiting-Time Anomalies
 
@@ -142,6 +146,7 @@ sum(data_clean$WaitingDays < 0)
 # Display the records with negative waiting time
 data_clean[data_clean$WaitingDays < 0,
            c("ScheduledDay", "AppointmentDay", "WaitingDays")]
+```
 
 # 13. Data Cleaning
 
@@ -151,8 +156,10 @@ The dataset is cleaned by handling invalid age values and inconsistent waiting p
 
 # Create a copy of the original dataset
 data_clean <- data
+```
 
 # Replace invalid age values with NA
+```{r cleaning}
 data_clean$Age[data_clean$Age < 0 | data_clean$Age > 100] <- NA
 
 # Convert date variables to Date format
@@ -249,3 +256,92 @@ barplot(
 ```
 
 **Interpretation:** The visualization shows that appointment demand varies across the days of the week. Wednesday records the highest number of appointments, closely followed by Tuesday. Monday also shows relatively high demand, while Friday and Thursday have fewer appointments. Saturday has an exceptionally low number of appointments. This suggests that patient demand is concentrated mainly during weekdays, particularly in the middle of the week. These findings may help the campus health centre plan staff availability and allocate resources more effectively during high-demand days.
+
+# 17. Appointment Demand by Month
+
+The number of appointments is examined across different months to identify seasonal patterns in healthcare demand.
+
+```{r demand-by-month}
+
+# Count appointments by month
+month_demand <- table(data_clean$AppointmentMonth)
+
+# Display the appointment counts
+month_demand
+```
+# 18. Visualization of Appointment Demand by Month
+
+The distribution of appointments across the available months is visualized to examine patterns in healthcare demand.
+
+```{r demand-month-plot}
+
+# Convert the monthly appointment counts into a data frame
+month_demand_df <- as.data.frame(month_demand)
+
+# Rename the columns
+names(month_demand_df) <- c("Month", "Appointments")
+
+# Set the months in chronological order
+month_order <- c("April", "May", "June")
+
+# Arrange the data according to the desired order
+month_demand_df <- month_demand_df[
+  match(month_order, month_demand_df$Month),
+]
+
+# Create the bar chart
+barplot(
+  month_demand_df$Appointments,
+  names.arg = month_demand_df$Month,
+  main = "Appointment Demand by Month",
+  xlab = "Month",
+  ylab = "Number of Appointments"
+)
+```
+### Interpretation
+
+The monthly analysis shows that the highest number of appointments occurred in May, followed by June, while April had the fewest appointments. However, these differences should be interpreted carefully because the dataset covers only a limited period and the number of observations available for each month is not equal. Therefore, the results indicate the distribution of appointments in this dataset rather than a definitive seasonal demand pattern.
+
+# 19. Appointment Attendance and No-Show Analysis
+
+The appointment attendance outcome is examined to understand the proportion of patients who attended their scheduled appointments and those who did not.
+
+```{r no-show-analysis}
+
+# Count attended and missed appointments
+no_show_counts <- table(data_clean$No.show)
+
+# Display the counts
+no_show_counts
+
+# Calculate the percentage of each outcome
+no_show_percent <- prop.table(no_show_counts) * 100
+
+# Display the percentages
+round(no_show_percent, 2)
+```
+### Interpretation
+
+The analysis shows that 79.81% of appointments were attended, while 20.19% resulted in a no-show. This means that approximately one out of every five scheduled appointments was missed. The relatively high proportion of no-shows indicates that missed appointments could be an important area for the campus health centre to address. Predictive analysis can therefore be used to identify factors associated with no-shows and support better appointment management.
+
+# 20. SMS Reminder and No-Show Analysis
+
+The relationship between receiving an SMS reminder and appointment attendance is examined to determine whether reminder messages are associated with no-show behaviour.
+
+```{r sms-no-show}
+
+# Create a cross-tabulation of SMS reminders and appointment outcomes
+sms_no_show <- table(
+  data_clean$SMS_received,
+  data_clean$No.show
+)
+
+# Display the counts
+sms_no_show
+
+# Calculate percentages within each SMS group
+round(prop.table(sms_no_show, margin = 1) * 100, 2)
+```
+### Interpretation
+
+The analysis shows that 16.70% of appointments without an SMS reminder resulted in a no-show, compared with 27.57% among appointments where an SMS reminder was received. Although the no-show rate is higher among patients who received an SMS reminder, this result does not establish that SMS reminders cause patients to miss appointments. Other factors, such as waiting time, age, or appointment scheduling patterns, may influence both SMS receipt and attendance. Further analysis is therefore required before making a business decision about SMS reminders.
