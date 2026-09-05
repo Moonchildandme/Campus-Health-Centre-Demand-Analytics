@@ -345,3 +345,519 @@ round(prop.table(sms_no_show, margin = 1) * 100, 2)
 ### Interpretation
 
 The analysis shows that 16.70% of appointments without an SMS reminder resulted in a no-show, compared with 27.57% among appointments where an SMS reminder was received. Although the no-show rate is higher among patients who received an SMS reminder, this result does not establish that SMS reminders cause patients to miss appointments. Other factors, such as waiting time, age, or appointment scheduling patterns, may influence both SMS receipt and attendance. Further analysis is therefore required before making a business decision about SMS reminders.
+
+# 21. Age and No-Show Analysis
+
+The relationship between patient age and appointment attendance is examined to determine whether no-show behaviour differs across age groups.
+
+```{r age-no-show}
+
+# Create age groups
+data_clean$AgeGroup <- cut(
+  data_clean$Age,
+  breaks = c(-1, 17, 30, 45, 60, 100),
+  labels = c("0-17", "18-30", "31-45", "46-60", "61-100")
+)
+
+# Calculate no-show percentage for each age group
+age_no_show <- prop.table(
+  table(data_clean$AgeGroup, data_clean$No.show),
+  margin = 1
+) * 100
+
+# Display the percentages
+round(age_no_show, 2)
+```
+**Interpretation:** The analysis shows that no-show behaviour varies across age groups. The 18–30 age group has the highest no-show rate at 24.61%, while the 61–100 age group has the lowest no-show rate at 15.20%. Overall, the no-show rate tends to decrease as age increases. This suggests that younger patients may require greater attention when planning appointment reminders and attendance management. However, age alone may not explain no-show behaviour, so other factors should also be considered in the predictive analysis.
+
+# 22. Visualization of No-Show Rate by Age Group
+
+The no-show rates across different age groups are visualized to better understand how appointment attendance varies with age.
+
+```{r age-no-show-plot}
+
+# Extract no-show percentages
+age_no_show_percent <- age_no_show[, "Yes"]
+
+# Create the bar chart
+barplot(
+  age_no_show_percent,
+  names.arg = rownames(age_no_show),
+  main = "No-Show Rate by Age Group",
+  xlab = "Age Group",
+  ylab = "No-Show Rate (%)",
+  ylim = c(0, 30)
+)
+```
+**Interpretation:** The visualization shows that the no-show rate is highest among the 18–30 age group, at 24.61%. The 61–100 age group has the lowest no-show rate, at 15.20%. Overall, the no-show rate generally decreases with increasing age, although the 0–17 and 31–45 groups have similar rates. This indicates that younger age groups, particularly 18–30, may require greater attention when planning appointment reminders and attendance management.
+
+# 23. Waiting Time and No-Show Analysis
+
+The relationship between the number of days between scheduling and the appointment date and patient no-show behaviour is examined to determine whether longer waiting periods are associated with missed appointments.
+
+```{r waiting-no-show}
+
+# Create waiting time groups
+data_clean$WaitingGroup <- cut(
+  data_clean$WaitingDays,
+  breaks = c(-1, 2, 7, 14, 30, 179),
+  labels = c("0-2 days", "3-7 days", "8-14 days", "15-30 days", "31+ days")
+)
+
+# Calculate no-show percentage for each waiting time group
+waiting_no_show <- prop.table(
+  table(data_clean$WaitingGroup, data_clean$No.show),
+  margin = 1
+) * 100
+
+# Display the percentages
+round(waiting_no_show, 2)
+```
+**Interpretation:** The analysis shows a clear relationship between waiting time and no-show behaviour. Appointments scheduled within 0–2 days have a relatively low no-show rate of 8.92%, while appointments with a waiting period of 31 days or more have a no-show rate of 33.00%. The no-show rate generally increases as the waiting period becomes longer. This suggests that longer waiting periods may be associated with a higher likelihood of missed appointments. Therefore, waiting time can be considered an important factor for appointment management and predictive analysis.
+
+# 24. Visualization of No-Show Rate by Waiting Time
+
+The no-show rates across different waiting time groups are visualized to better understand whether longer waiting periods are associated with missed appointments.
+
+```{r waiting-no-show-plot}
+
+# Extract no-show percentages
+waiting_no_show_percent <- waiting_no_show[, "Yes"]
+
+# Create the bar chart
+barplot(
+  waiting_no_show_percent,
+  names.arg = rownames(waiting_no_show),
+  main = "No-Show Rate by Waiting Time",
+  xlab = "Waiting Time",
+  ylab = "No-Show Rate (%)",
+  ylim = c(0, 40)
+)
+```
+**Interpretation:** The visualization clearly shows that the no-show rate increases as the waiting time becomes longer. Appointments with a waiting period of 0–2 days have the lowest no-show rate at 8.92%, while appointments with a waiting period of 31 days or more have the highest rate at 33.00%. This pattern suggests that longer waiting periods are associated with a greater likelihood of missed appointments. Therefore, reducing excessive waiting times or providing additional reminders for appointments scheduled far in advance may help improve attendance.
+
+# 25. Gender and No-Show Analysis
+
+The relationship between patient gender and appointment attendance is examined to determine whether no-show behaviour differs between gender groups.
+
+```{r gender-no-show}
+
+# Calculate attendance and no-show percentages by gender
+gender_no_show <- prop.table(
+  table(data_clean$Gender, data_clean$No.show),
+  margin = 1
+) * 100
+
+# Display the percentages
+round(gender_no_show, 2)
+```
+**Interpretation:** The analysis shows that the no-show rates for female and male patients are very similar. Female patients have a no-show rate of 20.31%, compared with 19.96% for male patients. The difference of only 0.35 percentage points suggests that gender has a relatively small association with no-show behaviour in this dataset. Therefore, gender alone may not be a strong factor for predicting missed appointments, although it can still be included as a potential predictor in the predictive model.
+
+# 26. Visualization of No-Show Rate by Gender
+
+The no-show rates for male and female patients are visualized to compare appointment attendance behaviour between the two gender groups.
+
+```{r gender-no-show-plot}
+
+# Extract no-show percentages
+gender_no_show_percent <- gender_no_show[, "Yes"]
+
+# Create the bar chart
+barplot(
+  gender_no_show_percent,
+  names.arg = rownames(gender_no_show),
+  main = "No-Show Rate by Gender",
+  xlab = "Gender",
+  ylab = "No-Show Rate (%)",
+  ylim = c(0, 25)
+)
+```
+**Interpretation:** The visualization shows that the no-show rates for female and male patients are almost identical. The no-show rate is 20.31% for female patients and 19.96% for male patients. The very small difference suggests that gender has little association with no-show behaviour in this dataset. Therefore, gender is unlikely to be a strong factor for predicting missed appointments on its own, although it may still be considered along with other variables in the predictive model.
+
+# 27. Preparing Data for Predictive Modeling
+
+The dataset is prepared for predictive modeling by converting the appointment outcome into a numerical format and selecting relevant variables that may help predict whether an appointment will result in a no-show.
+
+```{r model-preparation}
+
+# Convert no-show outcome into numerical form
+data_clean$NoShow <- ifelse(data_clean$No.show == "Yes", 1, 0)
+
+# Convert categorical variables to factors
+data_clean$Gender <- as.factor(data_clean$Gender)
+data_clean$AppointmentDayOfWeek <- as.factor(data_clean$AppointmentDayOfWeek)
+data_clean$AppointmentMonth <- as.factor(data_clean$AppointmentMonth)
+
+# Check the new target variable
+table(data_clean$NoShow)
+
+# Display the variables that will be considered for prediction
+names(data_clean)
+```
+
+# 28. Splitting Data into Training and Testing Sets
+
+The cleaned dataset is divided into training and testing sets. The training set is used to build the predictive model, while the testing set is used to evaluate how well the model performs on unseen data.
+
+```{r train-test-split}
+
+# Set a seed so that the same split can be reproduced
+set.seed(123)
+
+# Select relevant variables for the predictive model
+model_data <- data_clean[, c(
+  "NoShow",
+  "Age",
+  "Gender",
+  "WaitingDays",
+  "SMS_received",
+  "Scholarship",
+  "Hipertension",
+  "Diabetes",
+  "Alcoholism",
+  "Handcap",
+  "AppointmentDayOfWeek"
+)]
+
+# Remove records with missing values
+model_data <- na.omit(model_data)
+
+# Create random training and testing indices
+train_index <- sample(
+  1:nrow(model_data),
+  size = 0.80 * nrow(model_data)
+)
+
+# Create training and testing datasets
+train_data <- model_data[train_index, ]
+test_data <- model_data[-train_index, ]
+
+# Check the number of records in each dataset
+nrow(train_data)
+nrow(test_data)
+```
+# 29. Building the Logistic Regression Model
+
+A logistic regression model is developed to predict whether a patient will miss an appointment. The model uses patient and appointment-related characteristics from the training dataset.
+
+```{r logistic-model}
+
+# Build the logistic regression model
+logistic_model <- glm(
+  NoShow ~ Age + Gender + WaitingDays + SMS_received +
+    Scholarship + Hipertension + Diabetes +
+    Alcoholism + Handcap + AppointmentDayOfWeek,
+  data = train_data,
+  family = binomial
+)
+
+# Display the model summary
+summary(logistic_model)
+```
+# 30. Making Predictions on the Test Data
+
+The trained logistic regression model is used to predict the probability that each appointment in the testing dataset will result in a no-show.
+
+```{r model-predictions}
+
+# Predict the probability of a no-show
+predicted_probability <- predict(
+  logistic_model,
+  newdata = test_data,
+  type = "response"
+)
+
+# View the first few predicted probabilities
+head(predicted_probability)
+```
+# 31. Converting Probabilities into Predictions
+
+The predicted probabilities are converted into binary predictions using a threshold of 0.5. A probability of 0.5 or higher is classified as a predicted no-show, while a probability below 0.5 is classified as an expected attendance.
+
+```{r predicted-class}
+
+# Convert probabilities into Yes/No predictions
+predicted_class <- ifelse(
+  predicted_probability >= 0.5,
+  1,
+  0
+)
+
+# View the first few predictions
+head(predicted_class)
+```
+# 32. Evaluating the Predictions Using a Confusion Matrix
+
+A confusion matrix is used to compare the predicted appointment outcomes with the actual outcomes in the testing dataset. It shows how many appointments were correctly or incorrectly classified by the logistic regression model.
+
+```{r confusion-matrix}
+
+# Create the confusion matrix
+confusion_matrix <- table(
+  Actual = test_data$NoShow,
+  Predicted = predicted_class
+)
+
+confusion_matrix
+```
+# 33. Calculating Model Accuracy
+
+Model accuracy measures the proportion of test appointments that were classified correctly by the logistic regression model.
+
+```{r model-accuracy}
+
+# Calculate model accuracy
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+
+accuracy
+```
+# 34. Calculating Sensitivity for No-Show Prediction
+
+Sensitivity measures the ability of the model to correctly identify appointments that actually result in a no-show. This is an important measure because identifying potential no-shows is a key objective of the predictive analysis.
+
+```{r model-sensitivity}
+
+# Calculate sensitivity for no-show prediction
+true_positives <- confusion_matrix["1", "1"]
+false_negatives <- confusion_matrix["1", "0"]
+
+sensitivity <- true_positives / (true_positives + false_negatives)
+
+sensitivity
+```
+# 35. Calculating Specificity
+
+Specificity measures the ability of the model to correctly identify appointments that are actually attended. It shows how well the model avoids incorrectly classifying attended appointments as no-shows.
+
+```{r model-specificity}
+
+# Calculate specificity
+true_negatives <- confusion_matrix["0", "0"]
+false_positives <- confusion_matrix["0", "1"]
+
+specificity <- true_negatives / (true_negatives + false_positives)
+
+specificity
+```
+# 36. Calculating Precision for No-Show Prediction
+
+Precision measures how many of the appointments predicted as no-shows were actually no-shows. This helps evaluate how reliable the model's no-show predictions are.
+
+```{r model-precision}
+
+# Calculate precision
+precision <- true_positives / (true_positives + false_positives)
+
+precision
+```
+# 37. Calculating F1-Score
+
+The F1-score combines precision and sensitivity into a single measure. It is particularly useful when the classes are imbalanced, as in this dataset where no-shows are less common than attended appointments.
+
+```{r model-f1}
+
+# Calculate F1-score
+f1_score <- 2 * (precision * sensitivity) /
+  (precision + sensitivity)
+
+f1_score
+```
+# 38. ROC Curve and Area Under the Curve
+
+The Receiver Operating Characteristic (ROC) curve is used to evaluate the ability of the logistic regression model to distinguish between attended and missed appointments. The Area Under the Curve (AUC) provides a summary measure of this discriminatory ability.
+
+```{r roc-auc}
+
+# Load the pROC package
+library(pROC)
+
+# Create the ROC curve
+roc_curve <- roc(
+  test_data$NoShow,
+  predicted_probability
+)
+
+# Display the ROC curve
+plot(
+  roc_curve,
+  main = "ROC Curve for Logistic Regression Model"
+)
+
+# Calculate the AUC
+auc_value <- auc(roc_curve)
+
+auc_value
+```
+**Interpretation:** The ROC curve lies above the diagonal reference line, indicating that the logistic regression model has some ability to distinguish between attended and missed appointments. The Area Under the Curve (AUC) is 0.6614, which indicates modest discriminatory performance. Therefore, the model can identify some differences between appointments that are likely to be attended and those likely to result in a no-show, but its predictive ability is limited. Further improvement in the model or adjustment of the classification threshold may be required to identify potential no-shows more effectively.
+
+# 39. Finding an Improved Classification Threshold
+
+The default classification threshold of 0.5 results in very low sensitivity for detecting no-shows. An alternative threshold is therefore examined using the ROC curve. The Youden method identifies a threshold that provides a balance between sensitivity and specificity.
+
+```{r optimal-threshold}
+
+# Find the threshold that gives the best balance
+# between sensitivity and specificity
+best_threshold <- coords(
+  roc_curve,
+  "best",
+  ret = c("threshold", "sensitivity", "specificity"),
+  best.method = "youden"
+)
+
+best_threshold
+```
+# 40. Predictions Using the Improved Threshold
+
+The improved threshold identified from the ROC analysis is used to classify appointments as either expected attendance or potential no-show.
+
+```{r improved-predictions}
+
+# Extract the optimal threshold as a numeric value
+optimal_threshold <- best_threshold$threshold
+
+# Create new predictions using the improved threshold
+improved_predicted_class <- ifelse(
+  predicted_probability >= optimal_threshold,
+  1,
+  0
+)
+
+# View the first few predictions
+head(improved_predicted_class)
+```
+# 41. Confusion Matrix Using the Improved Threshold
+
+The predictions generated using the improved threshold are compared with the actual outcomes to evaluate whether the model is better at identifying no-show appointments.
+
+```{r improved-confusion-matrix}
+
+# Create the new confusion matrix
+improved_confusion_matrix <- table(
+  Actual = test_data$NoShow,
+  Predicted = improved_predicted_class
+)
+
+improved_confusion_matrix
+```
+# 42. Sensitivity Using the Improved Threshold
+
+Sensitivity measures the proportion of actual no-show appointments that are correctly identified by the model. This is particularly important because the main objective is to identify appointments that are likely to be missed.
+
+```{r improved-sensitivity}
+
+# Extract values from the improved confusion matrix
+true_positives_improved <- improved_confusion_matrix["1", "1"]
+false_negatives_improved <- improved_confusion_matrix["1", "0"]
+
+# Calculate sensitivity
+improved_sensitivity <- true_positives_improved /
+  (true_positives_improved + false_negatives_improved)
+
+improved_sensitivity
+```
+# 43. Specificity Using the Improved Threshold
+
+Specificity measures the proportion of appointments that were actually attended and were correctly identified by the model as expected attendance.
+
+```{r improved-specificity}
+
+# Extract true negatives and false positives
+true_negatives_improved <- improved_confusion_matrix["0", "0"]
+false_positives_improved <- improved_confusion_matrix["0", "1"]
+
+# Calculate specificity
+improved_specificity <- true_negatives_improved /
+  (true_negatives_improved + false_positives_improved)
+
+improved_specificity
+```
+# 44. Precision Using the Improved Threshold
+
+Precision measures the proportion of appointments predicted as no-shows that were actually no-shows. It helps determine how reliable the model's no-show predictions are.
+
+```{r improved-precision}
+
+# Extract true positives and false positives
+true_positives_improved <- improved_confusion_matrix["1", "1"]
+false_positives_improved <- improved_confusion_matrix["0", "1"]
+
+# Calculate precision
+improved_precision <- true_positives_improved /
+  (true_positives_improved + false_positives_improved)
+
+improved_precision
+```
+# 45. F1-Score Using the Improved Threshold
+
+The F1-score combines precision and sensitivity into a single measure. It is useful for evaluating the model when the classes are imbalanced and both correctly identifying no-shows and avoiding incorrect predictions are important.
+
+```{r improved-f1-score}
+
+# Calculate the F1-score
+improved_f1_score <- 2 * (
+  (improved_precision * improved_sensitivity) /
+  (improved_precision + improved_sensitivity)
+)
+
+improved_f1_score
+```
+# 46. Accuracy Using the Improved Threshold
+
+The accuracy of the model is recalculated using the improved classification threshold to determine the overall proportion of correctly classified appointments.
+
+```{r improved-accuracy}
+
+# Calculate accuracy using the improved predictions
+improved_accuracy <- sum(
+  diag(improved_confusion_matrix)
+) / sum(improved_confusion_matrix)
+
+improved_accuracy
+```
+# 47. Comparison of Classification Thresholds
+
+The performance of the logistic regression model is compared using the default threshold of 0.5 and the improved threshold identified using the Youden method.
+
+```{r threshold-comparison}
+
+# Create a comparison table
+threshold_comparison <- data.frame(
+  Metric = c(
+    "Accuracy",
+    "Sensitivity",
+    "Specificity",
+    "Precision",
+    "F1-Score"
+  ),
+  Default_Threshold = c(
+    accuracy,
+    sensitivity,
+    specificity,
+    precision,
+    f1_score
+  ),
+  Improved_Threshold = c(
+    improved_accuracy,
+    improved_sensitivity,
+    improved_specificity,
+    improved_precision,
+    improved_f1_score
+  )
+)
+
+# Convert values to percentages
+threshold_comparison$Default_Threshold <- round(
+  threshold_comparison$Default_Threshold * 100, 2
+)
+
+threshold_comparison$Improved_Threshold <- round(
+  threshold_comparison$Improved_Threshold * 100, 2
+)
+
+threshold_comparison
+```
+
+**Interpretation:** The comparison shows that changing the classification threshold from 0.5 to approximately 0.1908 substantially improves the model's ability to identify no-show appointments. Sensitivity increases from 1.69% to 62.36%, while the F1-score increases from 3.23% to 41.60%. However, accuracy and specificity decrease because more appointments are classified as potential no-shows. Since identifying potential no-shows is an important objective of the analysis, the improved threshold provides a more useful balance than the default threshold.
+
+
