@@ -860,4 +860,203 @@ threshold_comparison
 
 **Interpretation:** The comparison shows that changing the classification threshold from 0.5 to approximately 0.1908 substantially improves the model's ability to identify no-show appointments. Sensitivity increases from 1.69% to 62.36%, while the F1-score increases from 3.23% to 41.60%. However, accuracy and specificity decrease because more appointments are classified as potential no-shows. Since identifying potential no-shows is an important objective of the analysis, the improved threshold provides a more useful balance than the default threshold.
 
+# 48. Business Interpretation of the Predictive Model
+
+The predictive analysis was conducted to identify appointments that may be at higher risk of resulting in a no-show. The logistic regression model achieved an AUC of 0.6614, indicating that the model has a modest ability to distinguish between appointments that are attended and those that are missed.
+
+Using the default classification threshold of 0.5, the model achieved an accuracy of 79.36%, but its sensitivity was only 1.69%. This means that the model correctly identified very few of the appointments that actually resulted in no-shows.
+
+An improved classification threshold of approximately 0.1908 was therefore examined. At this threshold, sensitivity increased to 62.36%, meaning that the model was able to identify a substantially larger proportion of actual no-show appointments. The specificity was 64.91%, while the F1-score increased from 3.23% to 41.60%.
+
+These results show that accuracy alone is not sufficient for evaluating a no-show prediction system because the dataset contains considerably more attended appointments than no-show appointments. For appointment management, identifying potential no-shows is an important objective, so sensitivity and F1-score provide useful additional measures of model performance.
+
+The predictive model can therefore be used as a decision-support tool to flag appointments that have a higher predicted probability of being missed. The health centre could use these predictions to prioritize reminder efforts or review appointment scheduling practices. However, the predictions should support staff decision-making rather than automatically determine whether an appointment should be cancelled or treated differently.
+
+# 49. Key Findings from the Analysis
+
+The analysis produced several important findings related to appointment demand and patient attendance.
+
+1. **Appointment demand varies across the week:**  
+   Wednesday recorded the highest number of appointments, followed closely by Tuesday, while Saturday had very few appointments. This indicates that appointment demand is concentrated mainly on weekdays.
+
+2. **Appointment demand varies across the available months:**  
+   May recorded the highest number of appointments in the dataset, followed by June and April. However, these results should be interpreted cautiously because the dataset covers a limited period and the number of observations available for each month is not equal.
+
+3. **No-shows represent a significant proportion of appointments:**  
+   Approximately 20.19% of appointments resulted in a no-show, meaning that around one in every five scheduled appointments was missed.
+
+4. **Waiting time is associated with no-show behaviour:**  
+   The no-show rate increased from 8.92% for appointments with a waiting period of 0–2 days to 33.00% for appointments with a waiting period of 31 days or more. This was one of the clearest patterns observed in the analysis.
+
+5. **No-show rates vary across age groups:**  
+   The 18–30 age group had the highest observed no-show rate at 24.61%, while the 61–100 age group had the lowest at 15.20%.
+
+6. **Gender showed little difference in no-show rates:**  
+   Female patients had a no-show rate of 20.31%, compared with 19.96% for male patients. The small difference suggests that gender alone has limited association with no-show behaviour in this dataset.
+
+7. **The predictive model has limited but useful discriminatory ability:**  
+   The logistic regression model achieved an AUC of 0.6614. This indicates that the model can identify some differences between appointments likely to be attended and those likely to result in a no-show, although its predictive ability is limited.
+
+8. **Classification threshold has a major effect on model performance:**  
+   At the default threshold of 0.5, sensitivity was only 1.69%. After using an improved threshold of approximately 0.1908, sensitivity increased to 62.36% and the F1-score increased from 3.23% to 41.60%. This demonstrates the importance of selecting a classification threshold according to the practical objective of the prediction system.
+   
+
+# 50. Business Recommendations
+
+Based on the demand analysis, no-show analysis, and predictive modelling results, the following recommendations can be considered for improving appointment management at a campus health centre.
+
+### 1. Plan staff availability according to appointment demand
+
+Appointment demand was higher on Tuesday and Wednesday compared with the other days of the week. The health centre can use historical appointment patterns to plan staff availability and supporting resources during periods of relatively higher demand.
+
+### 2. Pay attention to appointments with longer waiting periods
+
+The analysis showed that no-show rates increased as the waiting period became longer. The health centre can therefore monitor appointments scheduled far in advance and consider additional communication or reminder strategies for such appointments.
+
+### 3. Use predictive risk flags for appointment management
+
+The logistic regression model can be used to calculate a predicted probability of a no-show for each appointment. Appointments above the selected threshold can be flagged as potential high-risk appointments.
+
+These flags can help health-centre staff prioritize reminder efforts rather than treating every appointment in exactly the same way.
+
+### 4. Use targeted reminders rather than relying only on general reminders
+
+The analysis showed differences in no-show behaviour across waiting-time and age groups. These patterns can be used to design more targeted appointment-management strategies.
+
+For example, appointments with longer waiting periods could receive additional reminders closer to the appointment date.
+
+### 5. Use the model as a decision-support tool
+
+The predictive model should be used to support staff decisions rather than automatically cancelling or rejecting appointments. Staff can consider the model's prediction together with practical information such as appointment type, urgency, and patient circumstances.
+
+### 6. Continuously monitor appointment data
+
+The health centre should regularly analyse new appointment data to identify changes in demand, attendance, and no-show patterns. As more campus-specific data becomes available, the predictive model can also be retrained and evaluated using the health centre's own historical records.
+
+### 7. Collect campus-specific data for future improvement
+
+The current analysis uses a publicly available healthcare appointment dataset adapted as a proxy for the campus health-centre scenario. A real implementation should collect campus-specific information such as appointment type, student/staff category, reason for visit, booking time, waiting time, previous attendance behaviour, and appointment cancellation status. This would allow a future model to provide more relevant predictions for the actual campus health centre.
+
+# 51. Proposed Real-Life Analytics Solution
+
+The analysis can be developed into a practical appointment-management system for a campus health centre. The proposed solution would use historical appointment data to understand demand patterns and identify appointments that may have a higher probability of resulting in a no-show.
+
+### Step 1: Collect appointment data
+
+The health centre can maintain a digital record of appointments containing information such as:
+
+- Appointment date and time
+- Booking date
+- Waiting time between booking and appointment
+- Student or staff category
+- Age group
+- Appointment type
+- Previous attendance history
+- Reminder status
+- Cancellation status
+- Whether the appointment was attended or missed
+
+### Step 2: Analyse appointment demand
+
+Historical appointment data can be analysed to identify:
+
+- Days with higher appointment demand
+- Periods with lower or higher demand
+- Changes in appointment volume over time
+- Patterns in cancellations and no-shows
+
+This information can help the health centre plan staff availability and resources according to expected demand.
+
+### Step 3: Calculate no-show risk
+
+The predictive model can use appointment and patient-related information to calculate the probability that an appointment will result in a no-show.
+
+For example, the model could produce an output such as:
+
+| Appointment | Predicted No-Show Probability | Risk Flag |
+|---|---:|---|
+| A001 | 8% | Lower risk |
+| A002 | 14% | Lower risk |
+| A003 | 27% | Potential risk |
+| A004 | 41% | Potential risk |
+
+The exact risk categories would need to be determined using future campus-specific data and operational requirements.
+
+### Step 4: Prioritize reminder efforts
+
+Appointments identified as having a higher predicted probability of no-show can be given additional attention. For example, the health centre could send an additional reminder or confirmation request before the appointment.
+
+This allows staff to focus limited resources on appointments that may require additional follow-up rather than applying the same intervention to every appointment.
+
+### Step 5: Monitor the results
+
+After implementing the system, the health centre can compare predicted outcomes with actual attendance.
+
+The model can then be evaluated regularly using measures such as:
+
+- Sensitivity
+- Specificity
+- Precision
+- F1-score
+- AUC
+
+This would allow the health centre to determine whether the prediction system continues to provide useful information.
+
+### Proposed workflow
+
+The overall proposed system can therefore be represented as:
+
+**Appointment Data → Data Cleaning → Demand Analysis → No-Show Prediction → Risk Flagging → Targeted Reminder → Attendance Monitoring → Model Improvement**
+
+The proposed system would function as a decision-support system for the campus health centre. It would not automatically cancel appointments or make decisions about patients. Instead, it would provide staff with analytical information that can support appointment planning and reminder management.
+
+The current project demonstrates this workflow using a publicly available healthcare appointment dataset adapted as a proxy for the campus health-centre scenario. A future implementation should retrain and validate the model using actual campus health-centre data before it is used operationally.
+
+# 52. Limitations of the Study
+
+Although the analysis provides useful insights into appointment demand and no-show behaviour, several limitations should be considered when interpreting the results.
+
+### 1. Use of a proxy dataset
+
+The dataset used in this project is a publicly available medical appointment dataset and was adapted to demonstrate a campus health-centre scenario. It does not represent actual appointment data from the campus health centre. Therefore, the findings should be considered a demonstration of the proposed analytics approach rather than direct evidence about the behaviour of students or staff at the campus.
+
+### 2. Limited time coverage
+
+The dataset covers a relatively short period of time. In addition, the number of appointments available for each month is not equal. Therefore, differences in monthly appointment volume cannot be interpreted as a definitive seasonal pattern.
+
+### 3. Limited predictive performance
+
+The logistic regression model achieved an AUC of 0.6614, indicating modest discriminatory ability. This means that the model can identify some differences between attended and missed appointments, but it cannot predict no-shows perfectly.
+
+### 4. Trade-off caused by the classification threshold
+
+The improved threshold increased sensitivity from 1.69% to 62.36%, allowing the model to identify a larger proportion of actual no-shows. However, specificity and overall accuracy decreased. This means that some appointments predicted as potential no-shows would actually be attended.
+
+### 5. Missing campus-specific variables
+
+The dataset does not contain several variables that could be important in a campus health-centre environment. Examples include student or staff status, appointment type, reason for visit, academic schedule, examination periods, previous attendance history, and campus-specific appointment policies.
+
+### 6. Predictive analysis does not establish causation
+
+The relationships observed between variables and no-show behaviour should not be interpreted as proof that one variable directly causes another. For example, the higher no-show rate observed among appointments where an SMS reminder was received does not mean that receiving an SMS causes patients to miss appointments. Other factors may influence both variables.
+
+### 7. Future validation is required
+
+Before the proposed system is used in a real campus health centre, the model should be trained and tested using actual campus-specific appointment data. Its performance should also be monitored over time and the model should be updated when sufficient new data becomes available.
+
+Despite these limitations, the project demonstrates how business analytics and predictive modelling can be applied to appointment demand and no-show management and provides a framework that can be adapted to a real campus health-centre environment.
+
+# 53. Conclusion
+
+This project analysed appointment demand and no-show behaviour using a publicly available healthcare appointment dataset adapted to a campus health-centre scenario. The analysis followed a business analytics approach involving data cleaning, exploratory analysis, feature engineering, and predictive modelling.
+
+The demand analysis showed that appointment volume varied across different days of the week, with higher appointment volumes observed during the middle of the week. The no-show analysis showed that approximately 20.19% of appointments were missed. Waiting time showed a clear association with no-show behaviour, with longer waiting periods generally corresponding to higher no-show rates.
+
+A logistic regression model was developed to predict whether an appointment would result in a no-show. The model achieved an AUC of 0.6614, indicating modest ability to distinguish between attended and missed appointments. The default classification threshold of 0.5 resulted in very low sensitivity of 1.69%. By using an improved threshold of approximately 0.1908, sensitivity increased to 62.36% and the F1-score increased from 3.23% to 41.60%. This demonstrates that classification threshold selection is important when the objective is to identify potential no-show appointments.
+
+Based on these findings, a real-life appointment-management solution was proposed in which historical appointment data could be used to analyse demand, predict potential no-shows, prioritize reminder efforts, and continuously monitor attendance patterns.
+
+The current project demonstrates the potential of predictive analytics as a decision-support approach for healthcare appointment management. However, the model should be retrained and validated using actual campus health-centre data before being considered for real-world implementation.
+
+Overall, the project demonstrates how Business Analytics can transform appointment data into actionable information that can support demand planning, appointment management, and more efficient use of healthcare resources.
 
